@@ -32,7 +32,7 @@ where
     }
 
     fn write_bank(&mut self, bank: u8, data: &[u8]) -> Result<(), Error<I2c>> {
-        self.set_bank(bank);
+        self.set_bank(bank)?;
 
         for (i, chunk) in data.chunks(CHUNK_SIZE).enumerate() {
             let mut prolog_and_chunk: [u8; CHUNK_SIZE + 1] = [0; CHUNK_SIZE + 1];

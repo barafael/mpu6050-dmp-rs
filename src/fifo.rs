@@ -1,4 +1,4 @@
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Fifo {
     pub temp: bool,
     pub xg: bool,
@@ -12,64 +12,49 @@ pub struct Fifo {
 
 impl Fifo {
     pub fn all_disabled() -> Self {
-        Fifo::default()
+        Self::default()
     }
 
     pub(crate) fn from_byte(byte: u8) -> Self {
         Self {
-            temp: (byte & 0b10000000) != 0,
-            xg: (byte & 0b01000000) != 0,
-            yg: (byte & 0b00100000) != 0,
-            zg: (byte & 0b00010000) != 0,
-            accel: (byte & 0b00001000) != 0,
-            slv2: (byte & 0b00000100) != 0,
-            slv1: (byte & 0b00000010) != 0,
-            slv0: (byte & 0b00000001) != 0,
+            temp: (byte & 0b1000_0000) != 0,
+            xg: (byte & 0b0100_0000) != 0,
+            yg: (byte & 0b0010_0000) != 0,
+            zg: (byte & 0b0001_0000) != 0,
+            accel: (byte & 0b0000_1000) != 0,
+            slv2: (byte & 0b0000_0100) != 0,
+            slv1: (byte & 0b0000_0010) != 0,
+            slv0: (byte & 0b0000_0001) != 0,
         }
     }
 
     pub(crate) fn to_byte(&self) -> u8 {
         let mut byte = 0;
         if self.temp {
-            byte |= (1 << 7)
+            byte |= 1 << 7;
         }
         if self.xg {
-            byte |= (1 << 6)
+            byte |= 1 << 6;
         }
         if self.yg {
-            byte |= (1 << 5)
+            byte |= 1 << 5;
         }
         if self.zg {
-            byte |= (1 << 4)
+            byte |= 1 << 4;
         }
         if self.accel {
-            byte |= (1 << 3)
+            byte |= 1 << 3;
         }
         if self.slv2 {
-            byte |= (1 << 2)
+            byte |= 1 << 2;
         }
         if self.slv1 {
-            byte |= (1 << 1)
+            byte |= 1 << 1;
         }
         if self.slv0 {
-            byte |= (1 << 0)
+            byte |= 1 << 0;
         }
 
         byte
-    }
-}
-
-impl Default for Fifo {
-    fn default() -> Self {
-        Self {
-            temp: false,
-            xg: false,
-            yg: false,
-            zg: false,
-            accel: false,
-            slv2: false,
-            slv1: false,
-            slv0: false,
-        }
     }
 }

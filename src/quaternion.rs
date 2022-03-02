@@ -7,9 +7,9 @@ pub struct Quaternion {
 }
 
 impl Quaternion {
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self, ()> {
+    pub fn from_bytes(bytes: &[u8]) -> Option<Self> {
         if bytes.len() != 16 {
-            return Err(());
+            return None;
         }
 
         let w = i32::from_be_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]);
@@ -22,7 +22,7 @@ impl Quaternion {
 
         //log::info!("---> {} {} {} {}", w, x, y, z);
 
-        Ok(Self {
+        Some(Self {
             w: w as f32 / 16384.0,
             x: x as f32 / 16384.0,
             y: y as f32 / 16384.0,
@@ -31,9 +31,8 @@ impl Quaternion {
     }
 
     pub fn magnitude(&self) -> f32 {
-        return libm::sqrt(
-            (self.w * self.w + self.x * self.x + self.y * self.y + self.z * self.z) as f64,
-        ) as f32;
+        libm::sqrt((self.w * self.w + self.x * self.x + self.y * self.y + self.z * self.z) as f64)
+            as f32
     }
 
     pub fn normalize(&self) -> Self {

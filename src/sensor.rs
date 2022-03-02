@@ -6,7 +6,6 @@ use crate::error::Error;
 use crate::fifo::Fifo;
 use crate::gyro::{Gyro, GyroFullScale};
 use crate::registers::Register;
-use core::marker::PhantomData;
 use drogue_embedded_timer::Delay;
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 use embedded_time::duration::Milliseconds;
@@ -78,7 +77,7 @@ where
             .map_err(|e| Error::WriteError(e))
     }
 
-    pub(crate) fn read_register<'a>(&mut self, reg: Register) -> Result<u8, Error<I2c>> {
+    pub(crate) fn read_register(&mut self, reg: Register) -> Result<u8, Error<I2c>> {
         let mut buf = [0; 1];
         self.read(&[reg as u8], &mut buf)?;
         Ok(buf[0])
@@ -103,7 +102,7 @@ where
     /// Perform power reset of the MPU
     pub fn reset(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::PwrMgmt1)?;
-        value |= (1 << 7);
+        value |= 1 << 7;
         self.write_register(Register::PwrMgmt1, value)?;
         Delay::new(self.clock).delay(Milliseconds(200));
         Ok(())
@@ -112,7 +111,7 @@ where
     /// Perform reset of the signal path
     pub fn reset_signal_path(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::UserCtrl)?;
-        value |= (1 << 0);
+        value |= 1 << 0;
         self.write_register(Register::UserCtrl, value)?;
         Delay::new(self.clock).delay(Milliseconds(200));
         Ok(())
@@ -122,7 +121,7 @@ where
     pub fn set_clock_source(&mut self, clock_source: ClockSource) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::PwrMgmt1)?;
         value |= clock_source as u8;
-        self.write_register(Register::PwrMgmt1, value);
+        self.write_register(Register::PwrMgmt1, value)?;
         Ok(())
     }
 
@@ -136,13 +135,13 @@ where
 
     pub fn set_accel_full_scale(&mut self, scale: AccelFullScale) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::AccelConfig)?;
-        value |= ((scale as u8) << 3);
+        value |= (scale as u8) << 3;
         self.write_register(Register::AccelConfig, value)
     }
 
     pub fn set_gyro_full_scale(&mut self, scale: GyroFullScale) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::GyroConfig)?;
-        value |= ((scale as u8) << 3);
+        value |= (scale as u8) << 3;
         self.write_register(Register::GyroConfig, value)
     }
 
@@ -155,19 +154,19 @@ where
         filter: DigitalLowPassFilter,
     ) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::Config)?;
-        value |= (filter as u8);
+        value |= filter as u8;
         self.write_register(Register::Config, value)
     }
 
     pub fn reset_fifo(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::UserCtrl)?;
-        value |= (1 << 2);
+        value |= 1 << 2;
         self.write_register(Register::UserCtrl, value)
     }
 
     pub fn enable_fifo(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::UserCtrl)?;
-        value |= (1 << 6);
+        value |= 1 << 6;
         self.write_register(Register::UserCtrl, value)
     }
 
@@ -175,7 +174,7 @@ where
     /// To perform full DMP initialization, see `initialize_dmp()`
     pub fn enable_dmp(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::UserCtrl)?;
-        value |= (1 << 7);
+        value |= 1 << 7;
         self.write_register(Register::UserCtrl, value)
     }
 
@@ -189,7 +188,7 @@ where
     /// Reset the DMP processor
     pub fn reset_dmp(&mut self) -> Result<(), Error<I2c>> {
         let mut value = self.read_register(Register::UserCtrl)?;
-        value |= (1 << 3);
+        value |= 1 << 3;
         self.write_register(Register::UserCtrl, value)
     }
 
@@ -198,7 +197,7 @@ where
         let mut len = self.get_fifo_count()?;
 
         if buf.len() < len {
-            len = buf.len()
+            len = buf.len();
         }
 
         if len == 0 {
@@ -219,7 +218,7 @@ where
 
     pub fn get_fifo_count(&mut self) -> Result<usize, Error<I2c>> {
         let mut buf = [0; 2];
-        let mut value = self.read_registers(Register::FifoCount_H, &mut buf)?;
+        let _value = self.read_registers(Register::FifoCount_H, &mut buf)?;
         Ok(u16::from_be_bytes(buf) as usize)
     }
 
