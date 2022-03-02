@@ -11,8 +11,8 @@ categories = ["no-std", "embedded"]
 readme = "README.md"
 
 [dependencies]
-embedded-hal = { version = "0.2.4", features = ["unproven"] }
-embedded-time = "0.10.0"
+embedded-hal = { version = "0.2.7", features = ["unproven"] }
+embedded-time = "0.10.1"
 drogue-embedded-timer = "0.2.1"
 log = "0.4.11"
 libm = "0.2.1"
