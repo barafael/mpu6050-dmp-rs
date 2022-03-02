@@ -1,5 +1,3 @@
-
-
 #[derive(Copy, Clone, Debug)]
 pub enum DigitalLowPassFilter {
     Filter0 = 0,

@@ -1,5 +1,3 @@
-
-
 #[derive(Copy, Clone, Debug)]
 pub struct Gyro {
     x: i16,
@@ -8,10 +6,10 @@ pub struct Gyro {
 }
 
 impl Gyro {
-    pub(crate) fn new(data: [u8;6]) -> Self {
-        let x = [ data[0], data[1] ];
-        let y = [ data[2], data[3] ];
-        let z = [ data[4], data[5] ];
+    pub(crate) fn new(data: [u8; 6]) -> Self {
+        let x = [data[0], data[1]];
+        let y = [data[2], data[3]];
+        let z = [data[4], data[5]];
         Self {
             x: i16::from_be_bytes(x),
             y: i16::from_be_bytes(y),

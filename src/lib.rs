@@ -1,20 +1,20 @@
 #![no_std]
 
-pub mod sensor;
-pub mod address;
-pub mod error;
-pub mod registers;
 pub mod accel;
-pub mod gyro;
-pub mod fifo;
+pub mod address;
 pub mod clock_source;
 pub mod config;
 mod dmp_firmware;
-mod firmware_loader;
-pub mod quaternion;
-pub mod gravity;
-pub mod yaw_pitch_roll;
+pub mod error;
 pub mod euler;
+pub mod fifo;
+mod firmware_loader;
+pub mod gravity;
+pub mod gyro;
+pub mod quaternion;
+pub mod registers;
+pub mod sensor;
+pub mod yaw_pitch_roll;
 
 #[cfg(test)]
 mod tests {

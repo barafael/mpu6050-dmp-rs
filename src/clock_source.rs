@@ -1,5 +1,3 @@
-
-
 #[derive(Debug, Copy, Clone)]
 pub enum ClockSource {
     Internal = 0,

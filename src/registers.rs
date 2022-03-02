@@ -1,4 +1,3 @@
-
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, Debug)]
 pub enum Register {
@@ -33,7 +32,6 @@ pub enum Register {
     FifoRw = 0x74,
 
     // ---
-
     BankSel = 0x6D,
     MemStartAddr = 0x6E,
     MemRw = 0x6F,
