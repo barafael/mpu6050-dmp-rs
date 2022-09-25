@@ -1,5 +1,5 @@
 #[derive(Copy, Clone, Debug)]
-pub struct Address(u8);
+pub struct Address(pub u8);
 
 impl Default for Address {
     fn default() -> Self {
@@ -10,5 +10,11 @@ impl Default for Address {
 impl From<Address> for u8 {
     fn from(addr: Address) -> Self {
         addr.0
+    }
+}
+
+impl From<u8> for Address {
+    fn from(addr: u8) -> Self {
+        Self(addr)
     }
 }
