@@ -2,7 +2,7 @@ use crate::accel::{Accel, AccelFullScale};
 use crate::address::Address;
 use crate::clock_source::ClockSource;
 use crate::config::DigitalLowPassFilter;
-use crate::error::Error;
+use crate::error::{Error, InitError};
 use crate::fifo::Fifo;
 use crate::gyro::{Gyro, GyroFullScale};
 use crate::registers::Register;
@@ -27,15 +27,25 @@ where
     <I2c as Write>::Error: core::fmt::Debug,
 {
     /// Construct a new i2c driver for the MPU-6050
-    pub fn new(i2c: I2c, address: Address) -> Result<Self, Error<I2c>> {
+    pub fn new(i2c: I2c, address: Address) -> Result<Self, InitError<I2c>> {
         let mut sensor = Self {
             i2c,
             address: address.into(),
         };
 
-        sensor.disable_sleep()?;
+        if let Err(error) = sensor.disable_sleep() {
+            Err(InitError {
+                error,
+                i2c: sensor.i2c,
+            })
+        } else {
+            Ok(sensor)
+        }
+    }
 
-        Ok(sensor)
+    /// Returns the underlying I2C peripheral, consuming this driver.
+    pub fn release(self) -> I2c {
+        self.i2c
     }
 
     /// Load DMP firmware and perform all appropriate initialization.

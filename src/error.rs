@@ -1,6 +1,28 @@
 use core::fmt::Formatter;
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 
+/// Error during initialization of sensor. Wraps [`Error`].
+pub struct InitError<I2c>
+where
+    I2c: WriteRead + Write,
+    <I2c as WriteRead>::Error: core::fmt::Debug,
+    <I2c as Write>::Error: core::fmt::Debug,
+{
+    pub i2c: I2c,
+    pub error: Error<I2c>,
+}
+
+impl<I2c> core::fmt::Debug for InitError<I2c>
+where
+    I2c: WriteRead + Write,
+    <I2c as WriteRead>::Error: core::fmt::Debug,
+    <I2c as Write>::Error: core::fmt::Debug,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+        self.error.fmt(f)
+    }
+}
+
 /// Error for sensor operations.
 pub enum Error<I2c>
 where
