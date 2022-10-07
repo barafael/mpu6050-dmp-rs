@@ -28,6 +28,14 @@ impl Accel {
     pub fn z(&self) -> i16 {
         self.z
     }
+
+    pub fn scaled(&self, scale: AccelFullScale) -> AccelF32 {
+        AccelF32 {
+            x: scale.scale_value(self.x),
+            y: scale.scale_value(self.y),
+            z: scale.scale_value(self.z),
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -36,4 +44,39 @@ pub enum AccelFullScale {
     G4 = 1,
     G8 = 2,
     G16 = 3,
+}
+
+impl AccelFullScale {
+    pub const fn scale(self) -> f32 {
+        match self {
+            AccelFullScale::G2 => 16384.0,
+            AccelFullScale::G4 => 8192.0,
+            AccelFullScale::G8 => 4096.0,
+            AccelFullScale::G16 => 2048.0,
+        }
+    }
+
+    pub fn scale_value(self, value: i16) -> f32 {
+        (value as f32) / self.scale()
+    }
+}
+
+pub struct AccelF32 {
+    x: f32,
+    y: f32,
+    z: f32,
+}
+
+impl AccelF32 {
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    pub fn z(&self) -> f32 {
+        self.z
+    }
 }

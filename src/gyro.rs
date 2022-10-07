@@ -28,6 +28,14 @@ impl Gyro {
     pub fn z(&self) -> i16 {
         self.z
     }
+
+    pub fn scaled(&self, scale: GyroFullScale) -> GyroF32 {
+        GyroF32 {
+            x: scale.scale_value(self.x),
+            y: scale.scale_value(self.y),
+            z: scale.scale_value(self.z),
+        }
+    }
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -36,4 +44,39 @@ pub enum GyroFullScale {
     Deg500 = 1,
     Deg1000 = 2,
     Deg2000 = 3,
+}
+
+impl GyroFullScale {
+    pub const fn scale(self) -> f32 {
+        match self {
+            GyroFullScale::Deg250 => 131.0,
+            GyroFullScale::Deg500 => 65.5,
+            GyroFullScale::Deg1000 => 32.8,
+            GyroFullScale::Deg2000 => 16.4,
+        }
+    }
+
+    pub fn scale_value(self, value: i16) -> f32 {
+        (value as f32) / self.scale()
+    }
+}
+
+pub struct GyroF32 {
+    x: f32,
+    y: f32,
+    z: f32,
+}
+
+impl GyroF32 {
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    pub fn z(&self) -> f32 {
+        self.z
+    }
 }
