@@ -1,12 +1,18 @@
-#[derive(Copy, Clone, Debug)]
+/// Raw gyro readings vector.
+/// Also used to represent gyro calibration offsets.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Gyro {
-    x: i16,
-    y: i16,
-    z: i16,
+    pub(crate) x: i16,
+    pub(crate) y: i16,
+    pub(crate) z: i16,
 }
 
 impl Gyro {
-    pub(crate) fn new(data: [u8; 6]) -> Self {
+    pub fn new(x: i16, y: i16, z: i16) -> Self {
+        Self { x, y, z }
+    }
+
+    pub fn from_bytes(data: [u8; 6]) -> Self {
         let x = [data[0], data[1]];
         let y = [data[2], data[3]];
         let z = [data[4], data[5]];
@@ -15,6 +21,13 @@ impl Gyro {
             y: i16::from_be_bytes(y),
             z: i16::from_be_bytes(z),
         }
+    }
+
+    pub fn to_bytes(&self) -> [u8; 6] {
+        let x = self.x.to_be_bytes();
+        let y = self.y.to_be_bytes();
+        let z = self.z.to_be_bytes();
+        [x[0], x[1], y[0], y[1], z[0], z[1]]
     }
 
     pub fn x(&self) -> i16 {

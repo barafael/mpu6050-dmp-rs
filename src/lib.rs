@@ -2,6 +2,7 @@
 
 pub mod accel;
 pub mod address;
+pub mod calibration;
 pub mod clock_source;
 pub mod config;
 mod dmp_firmware;
