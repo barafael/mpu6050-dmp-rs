@@ -39,6 +39,7 @@ pub enum Register {
 
     UserCtrl = 0x6A,
     IntEnable = 0x38,
+    IntStatus = 0x3A,
 
     FifoEn = 0x23,
     FifoCount_H = 0x72,

@@ -142,6 +142,27 @@ where
         self.write_register(Register::IntEnable, 0x00)
     }
 
+    /// Enables a FIFO buffer overflow to generate an interrupt
+    pub fn interrupt_fifo_oflow_en(&mut self) -> Result<(), Error<I2c>> {
+        self.write_register(Register::IntEnable, 0b0001_0000)
+    }
+
+    /// Enables any of the i2c master interrupt sources to generate an interrupt
+    pub fn interrupt_i2c_mst_int_en(&mut self) -> Result<(), Error<I2c>> {
+        self.write_register(Register::IntEnable, 0b0000_1000)
+    }
+
+    /// Enables the Data Ready interrupt, which occurs each time a write
+    /// operation to all of the sensor registers has been completed
+    pub fn interrupt_data_ready_en(&mut self) -> Result<(), Error<I2c>> {
+        self.write_register(Register::IntEnable, 0b1000_0000)
+    }
+
+    /// Read the interrupt status register and clear it.
+    pub fn interrupt_read_clear(&mut self) -> Result<u8, Error<I2c>> {
+        self.read_register(Register::IntStatus)
+    }
+
     /// Super simple averaging calibration of the accelerometers.
     /// Probably should be called before initializing the DMP.
     /// Deprecated because the new calibration framework (`calibrate`) works way better.
