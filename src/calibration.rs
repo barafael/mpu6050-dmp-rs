@@ -344,3 +344,67 @@ impl MeanAccumulator {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{
+        accel::{Accel, AccelFullScale},
+        gyro::Gyro,
+    };
+
+    use super::{MeanAccumulator, ReferenceGravity};
+
+    #[test]
+    fn test_mean_accumulator_with_compensation() {
+        // Case #1: attempt to subtract with overflow
+        {
+            let accel = Accel {
+                x: -1180,
+                y: -32768,
+                z: 32767,
+            };
+            let gyro = Gyro {
+                x: -3,
+                y: -7,
+                z: -10,
+            };
+
+            let mut mean_acc = MeanAccumulator::new(AccelFullScale::G2, ReferenceGravity::ZN);
+            mean_acc.add(&accel, &gyro);
+
+            assert_eq!(mean_acc.az, 32767 - 16384);
+        }
+    }
+
+    #[test]
+    fn test_mean_accumulator_with_compensation_negate_panic() {
+        // Case #2: attempt to subtract with overflow
+        {
+            let mut mean_acc = MeanAccumulator {
+                ax: -700924,
+                ay: -6520832,
+                az: 3260217,
+                gx: -3345,
+                gy: 770,
+                gz: -7648,
+                gravity_compensation: Accel {
+                    x: 0,
+                    y: 0,
+                    z: -16384,
+                },
+            };
+            let accel = Accel {
+                x: -3536,
+                y: -32768,
+                z: 32767,
+            };
+            let gyro = Gyro {
+                x: -105,
+                y: 100,
+                z: -36,
+            };
+
+            mean_acc.add(&accel, &gyro);
+        }
+    }
+}
