@@ -1,4 +1,5 @@
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Address(pub u8);
 
 impl Default for Address {

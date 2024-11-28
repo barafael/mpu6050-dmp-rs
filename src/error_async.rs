@@ -3,6 +3,7 @@ use core::fmt::{Debug, Formatter};
 use embedded_hal_async::i2c::I2c;
 
 /// Error during initialization of sensor. Wraps [`Error`].
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct InitError<I>
 where
     I: I2c,
@@ -21,6 +22,7 @@ where
 }
 
 /// Error for sensor operations.
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum Error<I>
 where
     I: I2c,

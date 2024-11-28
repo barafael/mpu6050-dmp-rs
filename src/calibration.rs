@@ -13,6 +13,7 @@ pub(crate) const DELAY_MS: u32 = 2;
 
 // The threshold value that average readings must not cross after calibration.
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct CalibrationThreshold {
     value: i16,
 }
@@ -93,6 +94,7 @@ impl CalibrationThreshold {
 /// Symbolic representation of a gravity vector aligned to one of the axes
 /// (gravity must be subtracted to acceleration readings during calibration)
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum ReferenceGravity {
     Zero,
     XN,
@@ -131,6 +133,7 @@ impl ReferenceGravity {
 /// Bit flags stating which axes must still be calibrated
 /// (six bits are used: acceleration x, y, z and gyro x, y, z)
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct CalibrationActions {
     flags: u8,
 }
@@ -223,6 +226,7 @@ impl CalibrationActions {
 /// Calibration parameters.
 /// (all the values that influence calibration and do not change between calibration loop runs)
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct CalibrationParameters {
     /// Acceleration scale
     pub accel_scale: AccelFullScale,
@@ -295,6 +299,7 @@ impl CalibrationParameters {
 
 /// Holds temporary values during sample mean computation
 /// (includes the reference gravity compensation for simplicity)
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct MeanAccumulator {
     pub ax: i32,
     pub ay: i32,

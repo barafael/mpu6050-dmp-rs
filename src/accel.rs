@@ -1,6 +1,7 @@
 /// Raw acceleration readings vector.
 /// Also used to represent acceleration calibration offsets.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Accel {
     pub(crate) x: i16,
     pub(crate) y: i16,
@@ -52,6 +53,7 @@ impl Accel {
 }
 
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum AccelFullScale {
     G2 = 0,
     G4 = 1,
@@ -74,6 +76,7 @@ impl AccelFullScale {
     }
 }
 
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct AccelF32 {
     x: f32,
     y: f32,

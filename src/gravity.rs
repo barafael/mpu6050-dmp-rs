@@ -1,6 +1,7 @@
 use crate::quaternion::Quaternion;
 
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Gravity {
     pub x: f32,
     pub y: f32,

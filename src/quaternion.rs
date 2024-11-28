@@ -1,4 +1,5 @@
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Quaternion {
     pub w: f32,
     pub x: f32,

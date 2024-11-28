@@ -1,6 +1,7 @@
 /// Raw gyro readings vector.
 /// Also used to represent gyro calibration offsets.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Gyro {
     pub(crate) x: i16,
     pub(crate) y: i16,
@@ -52,6 +53,7 @@ impl Gyro {
 }
 
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum GyroFullScale {
     Deg250 = 0,
     Deg500 = 1,
@@ -74,6 +76,8 @@ impl GyroFullScale {
     }
 }
 
+#[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct GyroF32 {
     x: f32,
     y: f32,

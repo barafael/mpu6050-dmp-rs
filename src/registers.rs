@@ -1,5 +1,6 @@
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum Register {
     Config = 0x1A,
     PwrMgmt1 = 0x6B,

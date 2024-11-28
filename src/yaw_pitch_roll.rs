@@ -2,6 +2,7 @@ use crate::gravity::Gravity;
 use crate::quaternion::Quaternion;
 
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct YawPitchRoll {
     pub yaw: f32,
     pub pitch: f32,

@@ -1,4 +1,5 @@
 #[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub enum ClockSource {
     Internal = 0,
     Xgyro = 1,

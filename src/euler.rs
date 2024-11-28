@@ -1,6 +1,7 @@
 use crate::quaternion::Quaternion;
 
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Euler {
     pub psi: f64,
     pub theta: f64,

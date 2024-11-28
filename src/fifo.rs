@@ -1,4 +1,5 @@
 #[derive(Debug, Default, Copy, Clone)]
+#[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
 pub struct Fifo {
     pub temp: bool,
     pub xg: bool,
