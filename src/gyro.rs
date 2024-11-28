@@ -85,6 +85,10 @@ pub struct GyroF32 {
 }
 
 impl GyroF32 {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
+        Self { x, y, z }
+    }
+
     pub fn x(&self) -> f32 {
         self.x
     }

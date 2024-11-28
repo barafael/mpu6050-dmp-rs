@@ -77,6 +77,7 @@ impl AccelFullScale {
 }
 
 #[cfg_attr(feature = "defmt-03", derive(defmt::Format))]
+#[derive(Debug, Clone, Copy)]
 pub struct AccelF32 {
     x: f32,
     y: f32,
@@ -84,6 +85,10 @@ pub struct AccelF32 {
 }
 
 impl AccelF32 {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
+        Self { x, y, z }
+    }
+
     pub fn x(&self) -> f32 {
         self.x
     }
