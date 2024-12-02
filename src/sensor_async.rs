@@ -396,4 +396,16 @@ where
         self.read_registers(Register::GyroX_H, &mut data).await?;
         Ok(Gyro::from_bytes(data))
     }
+
+    /// Gets the 6 degrees of freedom at once - Acceleration and Gyroscope.
+    pub async fn motion6(&mut self) -> Result<(Accel, Gyro), Error<I>> {
+        let mut data = [0; 14];
+        self.read_registers(Register::AccelX_H, &mut data).await?;
+
+        let accel = Accel::from_bytes([
+            data[0], data[1], data[2], data[3], data[4], data[5],
+        ]);
+        let gyro = Gyro::from_bytes([data[8], data[9], data[10], data[11], data[12], data[13]]);
+        Ok((accel, gyro))
+    }
 }
