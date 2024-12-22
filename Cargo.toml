@@ -1,6 +1,6 @@
 [package]
 name = "mpu6050-dmp"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
     "Bob McWhirter <bmcwhirt@redhat.com>",
     "Rafael Bachmann <rafael.bachmann.93@gmail.com",
