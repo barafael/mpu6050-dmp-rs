@@ -14,9 +14,10 @@ repository = "https://github.com/barafael/mpu6050-dmp-rs"
 readme = "README.md"
 
 [features]
-default = []
+default = ["temperature"]
 defmt-03 = ["dep:defmt"]
 async = ["dep:embedded-hal-async"]
+temperature = []
 
 [dependencies]
 embedded-hal = { version = "1" }

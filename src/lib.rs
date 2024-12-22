@@ -24,4 +24,6 @@ pub mod registers;
 pub mod sensor;
 #[cfg(feature = "async")]
 pub mod sensor_async;
+#[cfg(feature = "temperature")]
+pub mod temperature;
 pub mod yaw_pitch_roll;

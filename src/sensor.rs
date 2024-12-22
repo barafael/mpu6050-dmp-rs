@@ -1,3 +1,5 @@
+#[cfg(feature = "temperature")]
+use crate::temperature::Temperature;
 use crate::{
     accel::{Accel, AccelFullScale},
     address::Address,
@@ -446,5 +448,12 @@ where
         let accel = Accel::from_bytes([data[0], data[1], data[2], data[3], data[4], data[5]]);
         let gyro = Gyro::from_bytes([data[8], data[9], data[10], data[11], data[12], data[13]]);
         Ok((accel, gyro))
+    }
+
+    #[cfg(feature = "temperature")]
+    pub fn temperature(&mut self) -> Result<Temperature, Error<I>> {
+        let mut data = [0; 2];
+        self.read_registers(Register::TempOut_H, &mut data)?;
+        Ok(Temperature::from_bytes(data))
     }
 }

@@ -45,6 +45,16 @@ let i2c = dp.I2C1.i2c((scl, sda), 400.kHz(), &clocks);
 let sensor = Mpu6050::new(i2c, Address::default()).unwrap();
 ```
 
+### Temperature Measurement
+
+The MPU-6050 includes an on-chip temperature sensor. Temperature readings are available through the `temperature()` method when the `temperature` feature is enabled (enabled by default):
+
+```rust
+// Get temperature reading
+let temp = sensor.temperature().unwrap();
+println!("Temperature: {}°C", temp.celsius());
+```
+
 Setting up the DMP requires temporary exclusive access to a blocking delay implementation.
 The `initialize_dmp(&mut delay)` method is provided to set up reasonable configurations and load the DMP firmware into the processor.
 

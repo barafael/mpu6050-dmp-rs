@@ -27,6 +27,9 @@ pub enum Register {
     AccelZ_H = 0x3F,
     AccelZ_L = 0x40,
 
+    TempOut_H = 0x41,
+    TempOut_L = 0x42,
+
     AccelConfig = 0x1C,
 
     GyroX_H = 0x43,
