@@ -1,4 +1,3 @@
-#[cfg(feature = "temperature")]
 use crate::temperature::Temperature;
 use crate::{
     accel::{Accel, AccelFullScale},
@@ -409,7 +408,7 @@ where
         Ok((accel, gyro))
     }
 
-    #[cfg(feature = "temperature")]
+    /// Read the current temperature from the sensor's internal temperature sensor.
     pub async fn temperature(&mut self) -> Result<Temperature, Error<I>> {
         let mut data = [0; 2];
         self.read_registers(Register::TempOut_H, &mut data).await?;

@@ -1,4 +1,3 @@
-#[cfg(feature = "temperature")]
 use crate::temperature::Temperature;
 use crate::{
     accel::{Accel, AccelFullScale},
@@ -451,27 +450,6 @@ where
     }
 
     /// Read the current temperature from the sensor's internal temperature sensor.
-    ///
-    /// Note: This measures the internal temperature of the MPU-6050 chip itself,
-    /// not the ambient room temperature. Due to self-heating during operation,
-    /// readings will typically be a few degrees higher than the ambient temperature.
-    /// This can be useful for monitoring the device's temperature but should not be
-    /// used for ambient temperature measurement.
-    ///
-    /// Returns a [`Temperature`] struct that can convert the reading to degrees Celsius
-    /// using the [`Temperature::celsius()`] method. This is the recommended way to get
-    /// the temperature in a standard unit.
-    ///
-    /// Note: This method is only available when the "temperature" feature is enabled.
-    ///
-    /// # Example
-    /// ```
-    /// # use mpu6050_dmp::Mpu6050;
-    /// # let mut mpu = // ... initialize MPU-6050
-    /// let temp = mpu.temperature()?;
-    /// let celsius = temp.celsius(); // Get temperature in degrees Celsius
-    /// ```
-    #[cfg(feature = "temperature")]
     pub fn temperature(&mut self) -> Result<Temperature, Error<I>> {
         let mut data = [0; 2];
         self.read_registers(Register::TempOut_H, &mut data)?;
