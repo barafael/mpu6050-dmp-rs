@@ -81,7 +81,7 @@ impl CalibrationThreshold {
     /// and `P` because noise is mitigated by working on averages).
     pub fn next_offset(self, current_mean: i16, current_offset: i16) -> i16 {
         // In this PID controller the "error" is the observed average (when the calibration
-        // is correct the average is espected to be zero, or anyway within the given threshold).
+        // is correct the average is expected to be zero, or anyway within the given threshold).
         if self.is_value_within(current_mean) {
             // If we are withing the expected threshold do not change the offset (there's no need!).
             current_offset
@@ -95,7 +95,9 @@ impl CalibrationThreshold {
             // is small `current_mean / 10` is zero and the algorithm does not make progress.
             // Adding the `signum` is negligible during normal operation but ensures that the offset
             // keeps changing during the final tuning runs (when the error is already very small).
-            current_offset - ((current_mean / 10) + current_mean.signum())
+            //
+            // Use saturating arithmetic to prevent overflow when subtracting from current_offset
+            current_offset.saturating_sub((current_mean / 10) + current_mean.signum())
         }
     }
 }
@@ -387,7 +389,7 @@ mod tests {
         gyro::Gyro,
     };
 
-    use super::{MeanAccumulator, ReferenceGravity};
+    use super::{CalibrationThreshold, MeanAccumulator, ReferenceGravity};
 
     #[test]
     fn test_mean_accumulator_with_compensation() {
@@ -444,5 +446,43 @@ mod tests {
 
             mean_acc.add(&accel, &gyro);
         }
+    }
+
+    #[test]
+    fn test_next_offset_overflow_protection() {
+        // Test case for the overflow issue reported by users:
+        // "[ERROR] panicked at attempt to subtract with overflow"
+        let threshold = CalibrationThreshold { value: 8 };
+
+        // Case 1: Large negative offset with positive mean (would overflow without saturating arithmetic)
+        let result = threshold.next_offset(30000, -32000);
+        // Should not panic and should be clamped to valid i16 range
+        assert!(result >= i16::MIN && result <= i16::MAX);
+        assert_eq!(result, i16::MIN); // Should saturate to minimum value
+
+        // Case 2: Large positive offset with negative mean (would overflow in positive direction)
+        let result = threshold.next_offset(-30000, 32000);
+        assert!(result >= i16::MIN && result <= i16::MAX);
+        // Result should be 32000 - ((-30000 / 10) + (-1)) = 32000 - (-3000 - 1) = 32000 + 3001 = 35001
+        // But saturated to i16::MAX
+        assert_eq!(result, i16::MAX);
+
+        // Case 3: Normal operation should work as before (mean > threshold so adjustment happens)
+        let result = threshold.next_offset(100, 1000);
+        assert_eq!(result, 1000 - (10 + 1)); // 1000 - 11 = 989
+        assert_eq!(result, 989);
+
+        // Case 4: Small values within threshold should return unchanged offset
+        let result = threshold.next_offset(5, 100);
+        assert_eq!(result, 100); // No change because 5 <= 8 (within threshold)
+
+        // Case 5: Edge case at threshold boundary
+        let result = threshold.next_offset(8, 100);
+        assert_eq!(result, 100); // No change because 8 == 8 (within threshold)
+
+        // Case 6: Just outside threshold should apply adjustment
+        let result = threshold.next_offset(9, 100);
+        assert_eq!(result, 100 - (0 + 1)); // 100 - 1 = 99 (9/10 = 0 in integer division)
+        assert_eq!(result, 99);
     }
 }
