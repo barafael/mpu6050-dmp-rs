@@ -470,7 +470,6 @@ mod tests {
         // Case 3: Normal operation should work as before (mean > threshold so adjustment happens)
         let result = threshold.next_offset(100, 1000);
         assert_eq!(result, 1000 - (10 + 1)); // 1000 - 11 = 989
-        assert_eq!(result, 989);
 
         // Case 4: Small values within threshold should return unchanged offset
         let result = threshold.next_offset(5, 100);
