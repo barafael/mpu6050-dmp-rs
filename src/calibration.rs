@@ -83,7 +83,7 @@ impl CalibrationThreshold {
         // In this PID controller the "error" is the observed average (when the calibration
         // is correct the average is expected to be zero, or anyway within the given threshold).
         if self.is_value_within(current_mean) {
-            // If we are withing the expected threshold do not change the offset (there's no need!).
+            // If we are within the expected threshold do not change the offset (there's no need!).
             current_offset
         } else {
             // Otherwise adjust the offset.
