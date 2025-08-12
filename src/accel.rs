@@ -26,7 +26,7 @@ pub struct Accel {
 }
 
 impl Accel {
-    pub fn new(x: i16, y: i16, z: i16) -> Self {
+    pub const fn new(x: i16, y: i16, z: i16) -> Self {
         Self { x, y, z }
     }
 
@@ -36,7 +36,7 @@ impl Accel {
     /// - 2 bytes per axis (high byte, low byte)
     /// - Big-endian byte order
     /// - Signed integers (-32768 to +32767)
-    pub fn from_bytes(data: [u8; 6]) -> Self {
+    pub const fn from_bytes(data: [u8; 6]) -> Self {
         let x = [data[0], data[1]];
         let y = [data[2], data[3]];
         let z = [data[4], data[5]];
@@ -47,22 +47,22 @@ impl Accel {
         }
     }
 
-    pub fn to_bytes(&self) -> [u8; 6] {
+    pub const fn to_bytes(&self) -> [u8; 6] {
         let x = self.x.to_be_bytes();
         let y = self.y.to_be_bytes();
         let z = self.z.to_be_bytes();
         [x[0], x[1], y[0], y[1], z[0], z[1]]
     }
 
-    pub fn x(&self) -> i16 {
+    pub const fn x(&self) -> i16 {
         self.x
     }
 
-    pub fn y(&self) -> i16 {
+    pub const fn y(&self) -> i16 {
         self.y
     }
 
-    pub fn z(&self) -> i16 {
+    pub const fn z(&self) -> i16 {
         self.z
     }
 
@@ -72,7 +72,7 @@ impl Accel {
     /// 1. Takes raw ADC values (-32768 to +32767)
     /// 2. Divides by scale factor based on full-scale range
     /// 3. Results in g-force values (e.g., ±2g, ±4g, etc.)
-    pub fn scaled(&self, scale: AccelFullScale) -> AccelF32 {
+    pub const fn scaled(&self, scale: AccelFullScale) -> AccelF32 {
         AccelF32 {
             x: scale.scale_value(self.x),
             y: scale.scale_value(self.y),
@@ -118,7 +118,7 @@ impl AccelFullScale {
         }
     }
 
-    pub fn scale_value(self, value: i16) -> f32 {
+    pub const fn scale_value(self, value: i16) -> f32 {
         (value as f32) / self.scale()
     }
 }
@@ -147,19 +147,19 @@ pub struct AccelF32 {
 }
 
 impl AccelF32 {
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
+    pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
 
-    pub fn x(&self) -> f32 {
+    pub const fn x(&self) -> f32 {
         self.x
     }
 
-    pub fn y(&self) -> f32 {
+    pub const fn y(&self) -> f32 {
         self.y
     }
 
-    pub fn z(&self) -> f32 {
+    pub const fn z(&self) -> f32 {
         self.z
     }
 }

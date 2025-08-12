@@ -50,24 +50,24 @@ impl CalibrationThreshold {
     }
 
     /// Get the threshold value
-    pub fn value(&self) -> i16 {
+    pub const fn value(&self) -> i16 {
         self.value
     }
 
     /// Check if the given value is within the threshold
-    pub(crate) fn is_value_within(self, value: i16) -> bool {
+    pub(crate) const fn is_value_within(self, value: i16) -> bool {
         value.abs() <= self.value
     }
 
     /// Check if the given acceleration vector is within the threshold
-    pub fn is_accel_within(self, accel: &Accel) -> bool {
+    pub const fn is_accel_within(self, accel: &Accel) -> bool {
         self.is_value_within(accel.x())
             && self.is_value_within(accel.y())
             && self.is_value_within(accel.z())
     }
 
     /// Check if the given gyro vector is within the threshold
-    pub fn is_gyro_within(self, gyro: &Gyro) -> bool {
+    pub const fn is_gyro_within(self, gyro: &Gyro) -> bool {
         self.is_value_within(gyro.x())
             && self.is_value_within(gyro.y())
             && self.is_value_within(gyro.z())
@@ -79,7 +79,7 @@ impl CalibrationThreshold {
     /// This is technically the single step of a PID controller where we are using only
     /// the `I` part (`D` is not needed because calibration is not time-dependent,
     /// and `P` because noise is mitigated by working on averages).
-    pub fn next_offset(self, current_mean: i16, current_offset: i16) -> i16 {
+    pub const fn next_offset(self, current_mean: i16, current_offset: i16) -> i16 {
         // In this PID controller the "error" is the observed average (when the calibration
         // is correct the average is expected to be zero, or anyway within the given threshold).
         if self.is_value_within(current_mean) {
@@ -124,7 +124,7 @@ pub enum ReferenceGravity {
 
 impl ReferenceGravity {
     /// Actual `g` value at a given scale
-    fn gravity_value(scale: AccelFullScale) -> i16 {
+    const fn gravity_value(scale: AccelFullScale) -> i16 {
         match scale {
             AccelFullScale::G2 => 16384,
             AccelFullScale::G4 => 8192,
@@ -134,7 +134,7 @@ impl ReferenceGravity {
     }
 
     /// Acceleration vector representing gravity compensation in the given direction
-    pub fn gravity_compensation(self, scale: AccelFullScale) -> Accel {
+    pub const fn gravity_compensation(self, scale: AccelFullScale) -> Accel {
         match self {
             Self::Zero => Accel::new(0, 0, 0),
             Self::XN => Accel::new(-Self::gravity_value(scale), 0, 0),
@@ -168,47 +168,47 @@ impl CalibrationActions {
     const GYRO_Z: u8 = 1 << 5;
 
     /// Build an empty bit set
-    pub fn empty() -> Self {
+    pub const fn empty() -> Self {
         Self { flags: 0 }
     }
 
     /// Build a full bit set
-    pub fn all() -> Self {
+    pub const fn all() -> Self {
         Self { flags: 0x3f }
     }
 
     /// Check if we have nothing more to calibrate
-    pub fn is_empty(self) -> bool {
+    pub const fn is_empty(self) -> bool {
         self.flags == 0
     }
 
     /// Check if acceleration x axis calibration is required
-    pub fn accel_x(self) -> bool {
+    pub const fn accel_x(self) -> bool {
         self.flags & Self::ACCEL_X != 0
     }
     /// Check if acceleration y axis calibration is required
-    pub fn accel_y(self) -> bool {
+    pub const fn accel_y(self) -> bool {
         self.flags & Self::ACCEL_Y != 0
     }
     /// Check if acceleration z axis calibration is required
-    pub fn accel_z(self) -> bool {
+    pub const fn accel_z(self) -> bool {
         self.flags & Self::ACCEL_Z != 0
     }
     /// Check if gyro x axis calibration is required
-    pub fn gyro_x(self) -> bool {
+    pub const fn gyro_x(self) -> bool {
         self.flags & Self::GYRO_X != 0
     }
     /// Check if gyro y axis calibration is required
-    pub fn gyro_y(self) -> bool {
+    pub const fn gyro_y(self) -> bool {
         self.flags & Self::GYRO_Y != 0
     }
     /// Check if gyro z axis calibration is required
-    pub fn gyro_z(self) -> bool {
+    pub const fn gyro_z(self) -> bool {
         self.flags & Self::GYRO_Z != 0
     }
 
     /// Set the given flag
-    fn with_flag(self, value: bool, flag: u8) -> Self {
+    const fn with_flag(self, value: bool, flag: u8) -> Self {
         Self {
             flags: if value {
                 self.flags | flag
@@ -219,27 +219,27 @@ impl CalibrationActions {
     }
 
     /// Set acceleration x flag
-    pub fn with_accel_x(self, value: bool) -> Self {
+    pub const fn with_accel_x(self, value: bool) -> Self {
         self.with_flag(value, Self::ACCEL_X)
     }
     /// Set acceleration y flag
-    pub fn with_accel_y(self, value: bool) -> Self {
+    pub const fn with_accel_y(self, value: bool) -> Self {
         self.with_flag(value, Self::ACCEL_Y)
     }
     /// Set acceleration z flag
-    pub fn with_accel_z(self, value: bool) -> Self {
+    pub const fn with_accel_z(self, value: bool) -> Self {
         self.with_flag(value, Self::ACCEL_Z)
     }
     /// Set gyro x flag
-    pub fn with_gyro_x(self, value: bool) -> Self {
+    pub const fn with_gyro_x(self, value: bool) -> Self {
         self.with_flag(value, Self::GYRO_X)
     }
     /// Set gyro y flag
-    pub fn with_gyro_y(self, value: bool) -> Self {
+    pub const fn with_gyro_y(self, value: bool) -> Self {
         self.with_flag(value, Self::GYRO_Y)
     }
     /// Set gyro z flag
-    pub fn with_gyro_z(self, value: bool) -> Self {
+    pub const fn with_gyro_z(self, value: bool) -> Self {
         self.with_flag(value, Self::GYRO_Z)
     }
 }
@@ -274,7 +274,7 @@ pub struct CalibrationParameters {
 impl CalibrationParameters {
     /// Create calibration parameters given accel and gyro scale and a reference gravity
     /// (sensible defaults are used for all other parameters)
-    pub fn new(
+    pub const fn new(
         accel_scale: AccelFullScale,
         gyro_scale: GyroFullScale,
         gravity: ReferenceGravity,
@@ -292,7 +292,7 @@ impl CalibrationParameters {
 
     /// Change acceleration threshold
     /// (consumes and returns `Self` to be callable in a "builder-like" pattern)
-    pub fn with_accel_threshold(self, threshold: i16) -> Self {
+    pub const fn with_accel_threshold(self, threshold: i16) -> Self {
         Self {
             accel_threshold: CalibrationThreshold { value: threshold },
             ..self
@@ -301,7 +301,7 @@ impl CalibrationParameters {
 
     /// Change gyro threshold
     /// (consumes and returns `Self` to be callable in a "builder-like" pattern)
-    pub fn with_gyro_threshold(self, threshold: i16) -> Self {
+    pub const fn with_gyro_threshold(self, threshold: i16) -> Self {
         Self {
             gyro_threshold: CalibrationThreshold { value: threshold },
             ..self
@@ -310,7 +310,7 @@ impl CalibrationParameters {
 
     /// Change warmup iterations count
     /// (consumes and returns `Self` to be callable in a "builder-like" pattern)
-    pub fn with_warmup_iterations(self, warmup_iterations: usize) -> Self {
+    pub const fn with_warmup_iterations(self, warmup_iterations: usize) -> Self {
         Self {
             warmup_iterations,
             ..self
@@ -319,7 +319,7 @@ impl CalibrationParameters {
 
     /// Change iterations count
     /// (consumes and returns `Self` to be callable in a "builder-like" pattern)
-    pub fn with_iterations(self, iterations: usize) -> Self {
+    pub const fn with_iterations(self, iterations: usize) -> Self {
         Self { iterations, ..self }
     }
 }
@@ -345,7 +345,7 @@ pub struct MeanAccumulator {
 impl MeanAccumulator {
     /// Initializes the means with zero values
     /// (and also fixes the reference gravity compensation)
-    pub fn new(accel_scale: AccelFullScale, gravity: ReferenceGravity) -> Self {
+    pub const fn new(accel_scale: AccelFullScale, gravity: ReferenceGravity) -> Self {
         Self {
             ax: 0,
             ay: 0,
@@ -358,7 +358,7 @@ impl MeanAccumulator {
     }
 
     /// Adds a new sample (subtracting the reference gravity)
-    pub fn add(&mut self, accel: &Accel, gyro: &Gyro) {
+    pub const fn add(&mut self, accel: &Accel, gyro: &Gyro) {
         self.ax += (accel.x() as i32) - (self.gravity_compensation.x() as i32);
         self.ay += (accel.y() as i32) - (self.gravity_compensation.y() as i32);
         self.az += (accel.z() as i32) - (self.gravity_compensation.z() as i32);
@@ -368,7 +368,7 @@ impl MeanAccumulator {
     }
 
     /// Compute average values (consumes `self` because the computation is done)
-    pub fn means(mut self) -> (Accel, Gyro) {
+    pub const fn means(mut self) -> (Accel, Gyro) {
         self.ax /= ITERATIONS as i32;
         self.ay /= ITERATIONS as i32;
         self.az /= ITERATIONS as i32;

@@ -36,7 +36,7 @@ impl Quaternion {
     /// 1. Reads four 4-byte values (w,x,y,z)
     /// 2. Converts from big-endian byte order
     /// 3. Scales values to floating point (-1 to 1 range)
-    pub fn from_bytes(bytes: &[u8]) -> Option<Self> {
+    pub const fn from_bytes(bytes: &[u8]) -> Option<Self> {
         if bytes.len() != 16 {
             return None;
         }

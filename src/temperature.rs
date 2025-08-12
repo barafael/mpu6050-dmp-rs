@@ -28,17 +28,17 @@ pub struct Temperature {
 }
 
 impl Temperature {
-    pub fn new(raw: i16) -> Self {
+    pub const fn new(raw: i16) -> Self {
         Self { raw }
     }
 
-    pub fn from_bytes(data: [u8; 2]) -> Self {
+    pub const fn from_bytes(data: [u8; 2]) -> Self {
         Self {
             raw: i16::from_be_bytes(data),
         }
     }
 
-    pub fn to_bytes(&self) -> [u8; 2] {
+    pub const fn to_bytes(&self) -> [u8; 2] {
         self.raw.to_be_bytes()
     }
 
@@ -47,13 +47,13 @@ impl Temperature {
     /// Note: In most cases, you should use [`Temperature::celsius()`] instead to get the temperature
     /// in degrees Celsius. The raw value is primarily useful for debugging or
     /// custom temperature conversion implementations.
-    pub fn raw(&self) -> i16 {
+    pub const fn raw(&self) -> i16 {
         self.raw
     }
 
     /// Convert raw temperature to degrees Celsius
     /// Formula from datasheet: Temperature = (TEMP_OUT)/340 + 36.53
-    pub fn celsius(&self) -> f32 {
+    pub const fn celsius(&self) -> f32 {
         (self.raw as f32) / 340.0 + 36.53
     }
 }

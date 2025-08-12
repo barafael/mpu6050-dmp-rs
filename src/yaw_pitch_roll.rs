@@ -33,8 +33,6 @@ pub struct YawPitchRoll {
     pub roll: f32,
 }
 
-impl YawPitchRoll {}
-
 impl From<Quaternion> for YawPitchRoll {
     /// Converts a quaternion to Euler angles (Yaw, Pitch, Roll).
     ///
